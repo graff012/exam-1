@@ -7,8 +7,13 @@ class AttendanceController {
 
   async createAttendanceController(req, res, next) {
     try {
-      const attendance = await this.attendanceService.createAttendance(req.body);
-      res.status(201).json(attendance);
+      const { lesson_id, attendances } = req.body;
+      const created_by = req.user.userId; // Changed from _id to userId to match JWT payload
+      const attendance = await this.attendanceService.createAttendance(lesson_id, attendances, created_by);
+      res.status(201).json({
+        success: true,
+        attendance,
+      });
     } catch (error) {
       next(error);
     }
@@ -17,7 +22,10 @@ class AttendanceController {
   async getAttendanceByGroupController(req, res, next) {
     try {
       const attendance = await this.attendanceService.getAttendanceByGroup(req.params.groupId);
-      res.status(200).json(attendance);
+      res.status(200).json({
+        success: true,
+        attendance,
+      });
     } catch (error) {
       next(error);
     }
@@ -26,7 +34,10 @@ class AttendanceController {
   async getAttendanceByGroupAndDateController(req, res, next) {
     try {
       const attendance = await this.attendanceService.getAttendanceByGroupAndDate(req.params.groupId, req.params.date);
-      res.status(200).json(attendance);
+      res.status(200).json({
+        success: true,
+        attendance,
+      });
     } catch (error) {
       next(error);
     }
@@ -34,7 +45,7 @@ class AttendanceController {
 
   async getAttendanceByStudentController(req, res, next) {
     try {
-      const result = await this.attendanceService.getAttendanceByStudent(req.params.studentId);
+      const result = await this.attendanceService.getAttendanceByStudent(req.params.student_id);
       res.status(200).json({
         success: true,
         student: result.student,
