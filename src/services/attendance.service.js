@@ -12,7 +12,6 @@ class AttendanceService {
   }
 
   // I did student student and lesson attendance in one table
-  // I did group and date attendance in one table
 
   async createAttendance(attendanceData) {
     const attendance = await this.attendanceModel.create(attendanceData);

@@ -7,7 +7,10 @@ class PaymentController {
   async createPaymentController(req, res, next) {
     try {
       const payment = await this.paymentService.createPayment(req.body);
-      res.status(201).json(payment);
+      res.status(201).json({
+        success: true,
+        payment,
+      });
     } catch (error) {
       next(error);
     }
@@ -16,7 +19,10 @@ class PaymentController {
   async getPaymentsController(req, res, next) {
     try {
       const payments = await this.paymentService.getPayments();
-      res.status(200).json(payments);
+      res.status(200).json({
+        success: true,
+        payments,
+      });
     } catch (error) {
       next(error);
     }
@@ -25,7 +31,10 @@ class PaymentController {
   async getPaymentByIdController(req, res, next) {
     try {
       const payment = await this.paymentService.getPaymentById(req.params.id);
-      res.status(200).json(payment);
+      res.status(200).json({
+        success: true,
+        payment,
+      });
     } catch (error) {
       next(error);
     }
@@ -34,7 +43,10 @@ class PaymentController {
   async updatePaymentController(req, res, next) {
     try {
       const payment = await this.paymentService.updatePayment(req.params.id, req.body);
-      res.status(200).json(payment);
+      res.status(200).json({
+        success: true,
+        payment,
+      });
     } catch (error) {
       next(error);
     }
@@ -43,7 +55,10 @@ class PaymentController {
   async deletePaymentController(req, res, next) {
     try {
       const payment = await this.paymentService.deletePayment(req.params.id);
-      res.status(200).json(payment);
+      res.status(200).json({
+        success: true,
+        payment,
+      });
     } catch (error) {
       next(error);
     }
