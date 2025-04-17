@@ -14,48 +14,63 @@ class AttendanceService {
   }
 
   async createAttendance(lesson_id, attendances, created_by) {
-    const lesson = await this.lessonModel.findById(lesson_id);
-    if (!lesson) {
-      throw new Error("Lesson not found");
+    try {
+      const lesson = await this.lessonModel.findById(lesson_id);
+      if (!lesson) {
+        throw new Error("Lesson not found");
+      }
+
+      const mainAttendance = await this.attendanceModel.create({
+        lesson_id,
+        group_id: lesson.group_id,
+        created_by
+      });
+
+      const attendanceRecords = await Promise.all(
+        attendances.map(async (attendance) => {
+          try {
+            const student = await this.studentModel.findById(attendance.student_id);
+            if (!student) {
+              throw new Error(`Student with ID ${attendance.student_id} not found`);
+            }
+
+            const attendanceDetail = await this.attendanceDetailsModel.create({
+              attendance_id: mainAttendance._id,
+              student_id: attendance.student_id,
+              status: attendance.status,
+              comment: attendance.comment || ""
+            });
+
+            return attendanceDetail;
+          } catch (error) {
+            console.error(`Error creating attendance for student ${attendance.student_id}:`, error);
+            throw error;
+          }
+        })
+      );
+
+      const stats = await this.getAttendanceStats(mainAttendance._id);
+
+      return {
+        lesson: {
+          _id: lesson._id,
+          title: lesson.title,
+          lesson_date: lesson.lesson_date
+        },
+        attendanceCount: stats.total,
+        present: stats.present,
+        absent: stats.absent,
+        late: stats.late,
+        attendanceRecords: attendanceRecords.map(record => ({
+          student_id: record.student_id,
+          status: record.status,
+          comment: record.comment
+        }))
+      };
+    } catch (error) {
+      console.error('Error in createAttendance:', error);
+      throw error;
     }
-
-    // Create main attendance record
-    const mainAttendance = await this.attendanceModel.create({
-      lesson_id,
-      group_id: lesson.group_id,
-      created_by
-    });
-
-    // Create attendance details for each student
-    const attendanceRecords = await Promise.all(
-      attendances.map(async (attendance) => {
-        const student = await this.studentModel.findById(attendance.student_id);
-        if (!student) {
-          throw new Error(`Student with ID ${attendance.student_id} not found`);
-        }
-
-        return this.attendanceDetailsModel.create({
-          attendance_id: mainAttendance._id,
-          student_id: attendance.student_id,
-          status: attendance.status,
-          comment: attendance.comment || ""
-        });
-      })
-    );
-
-    const stats = await this.getAttendanceStats(mainAttendance._id);
-
-    return {
-      lesson: {
-        _id: lesson._id,
-        title: lesson.title,
-        lesson_date: lesson.lesson_date
-      },
-      attendanceCount: stats.total,
-      present: stats.present,
-      absent: stats.absent,
-      late: stats.late
-    };
   }
 
   async getAttendanceByGroup(groupId) {
@@ -106,11 +121,9 @@ class AttendanceService {
   }
 
   async getAttendanceByStudent(studentId, startDate, endDate, groupId) {
-    console.log('Looking up student with ID:', studentId);
     
     const student = await this.studentModel.findById(studentId);
     if (!student) {
-      console.log('Student not found in database');
       throw new Error("Student not found");
     }
     console.log('Found student:', student);

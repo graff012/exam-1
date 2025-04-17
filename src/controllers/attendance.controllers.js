@@ -8,7 +8,7 @@ class AttendanceController {
   async createAttendanceController(req, res, next) {
     try {
       const { lesson_id, attendances } = req.body;
-      const created_by = req.user.userId; // Changed from _id to userId to match JWT payload
+      const created_by = req.user.userId;
       const attendance = await this.attendanceService.createAttendance(lesson_id, attendances, created_by);
       res.status(201).json({
         success: true,
