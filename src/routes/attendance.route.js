@@ -8,6 +8,7 @@ const controller = new AttendanceController();
 attendanceRouter.post("/attendance", authMiddleware("teacher", "admin"), controller.createAttendanceController.bind(controller));
 attendanceRouter.get("/attendance/:id", authMiddleware("teacher", "admin"), controller.getAttendanceByStudentController.bind(controller));
 attendanceRouter.get("/attendance/group/:id", authMiddleware("teacher", "admin"), controller.getAttendanceByGroupController.bind(controller));
+attendanceRouter.post("/attendance/group/:groupId/date", authMiddleware("teacher", "admin"), controller.getAttendanceByGroupAndDateController.bind(controller));
 attendanceRouter.put("/attendance/:id", authMiddleware("teacher", "admin"), controller.updateAttendanceController.bind(controller));
 attendanceRouter.delete("/attendance/:id", authMiddleware("teacher", "admin"), controller.deleteAttendanceController.bind(controller));
 
