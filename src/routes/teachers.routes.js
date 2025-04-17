@@ -1,12 +1,14 @@
 import { Router } from "express";
-import TeacherController from "../controllers/teacher.controller.js";
+import TeacherProfileController from "../controllers/teacher.controller.js";
+import authorizeRole from "../middleware/auth.middleware.js";
 
 const teacherRouter = Router();
-const controller = new TeacherController();
+const controller = new TeacherProfileController();
 
 teacherRouter.post(
   "/register/teacher",
-  controller.registerTeacherController.bind(controller)
+  authorizeRole("superadmin", "admin"),
+  controller.registerTeacherProfileController.bind(controller)
 );
 
 export default teacherRouter;

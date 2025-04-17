@@ -7,6 +7,11 @@ const AttendanceSchema = new Schema(
       ref: "lessons",
       required: true,
     },
+    group_id: {
+      type: Schema.Types.ObjectId,
+      ref: "groups",
+      required: true,
+    },
     created_by: {
       type: Schema.Types.ObjectId,
       ref: "staffs",

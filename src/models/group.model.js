@@ -13,7 +13,7 @@ const GroupSchema = new Schema(
     teacher_id: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "teachers",
+      ref: "teacher_profile",
     },
     start_date: {
       type: Date,

@@ -5,7 +5,7 @@ class JwtService {
   #secretKey = process.env.JWT_SECRET_KEY;
 
   async generateToken(userId, role) {
-    const acceccToken = jwt.sign({ userId, role }, this.#secretKey, {
+    const accessToken = jwt.sign({ userId, role }, this.#secretKey, {
       expiresIn: "1h",
     });
 
@@ -13,10 +13,22 @@ class JwtService {
       expiresIn: "3h",
     });
 
-    return { acceccToken, refreshToken };
+    return { accessToken, refreshToken };
   }
 
   async generateTeacherToken(userId) {
+    const accessToken = jwt.sign({ userId }, this.#secretKey, {
+      expiresIn: "1h",
+    });
+
+    const refreshToken = jwt.sign({ userId }, this.#secretKey, {
+      expiresIn: "3h",
+    });
+
+    return { accessToken, refreshToken };
+  }
+
+  async generateStudentToken(userId) {
     const accessToken = jwt.sign({ userId }, this.#secretKey, {
       expiresIn: "1h",
     });

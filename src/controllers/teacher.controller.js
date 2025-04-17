@@ -1,6 +1,6 @@
 import TeacherProfileService from "../services/teachers.service.js";
 
-class TeacherController {
+class TeacherProfileController {
   constructor() {
     this.teacherProfileService = new TeacherProfileService();
   }
@@ -12,7 +12,17 @@ class TeacherController {
       const teacher =
         await this.teacherProfileService.registerTeacherProfile(body);
 
-      res.status(201).json(teacher);
+      res.status(201).json({
+        success: true,
+        teacher: {
+          id: teacher._id,
+          firstName: teacher.staffId.firstName,
+          lastName: teacher.staffId.lastName,
+        },
+        specialization: teacher.specialization,
+        education: teacher.education,
+        experience: teacher.experience,
+      });
     } catch (err) {
       next(err);
     }
@@ -21,4 +31,4 @@ class TeacherController {
   async loginTeacherProfileController(req, res, next) {}
 }
 
-export default TeacherController;
+export default TeacherProfileController;

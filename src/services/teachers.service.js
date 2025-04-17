@@ -15,10 +15,13 @@ class TeacherProfileService {
     await this.validateService.validateTeacher(data);
 
     const teacher = await this.teacherModel.create(data);
-    return teacher;
+
+    return await teacher.populate({
+      path: "staffId",
+      select: "firstName lastName",
+    });
   }
 
-  async loginTeacherProfile(data) {}
 }
 
 export default TeacherProfileService;
